@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
-
+#include <iostream>
 using namespace std;
+
 
 /*
 * Function to verify if element is a valid HTML5 element.
