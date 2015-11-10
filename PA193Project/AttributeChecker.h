@@ -11,11 +11,3 @@ using namespace std;
 */
 bool isValidAttribute(string attribute);
 
-/*
-* Function to verify if given attribute can be used with specified element.
-*
-* return true   if element - attribute pair is valid
-*        false  if element - attribute pair is not valid
-*/
-bool isValidPair(string element, string attribute);
-

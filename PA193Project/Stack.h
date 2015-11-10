@@ -3,34 +3,22 @@
 #include <iostream>
 using namespace std;
 
-/*
-* Function to put new element on top of the stack.
-*
-* return true   if element was successfuly added
-*        false  if any error occurs
-*/
-bool push(string element);
+const int stack_size = 1000;
 
-/*
-* Function to remove element from top of the stack
-*
-* return element           element from top of the stack
-*        empty  string     if any error occurs
-*/
-string pop();
+class stack
+{
+private:
+	// data for the stack
+	string data[stack_size];
+	// the index of the top element of the stack
+	int top;
+public:
+	stack();   // constructor creates an empty stack
+	bool push(string element);  // puts item on the top of the stack
+	string pop();   // removes and returns the item at the top of stack
+	bool isEmpty();
+	bool full();
+	string topOfStack();
+};
 
-/*
-* Function to get element from top of the stack. Element is not removed from the stack.
-*
-* return element  element from top of the stack
-*        empty  string     if any error occurs
-*/
-string top();
 
-/*
-* Function to verify is there is any element in stack.
-*
-* return true   if stack is empty
-*        false  if stack is not
-*/
-bool isEmpty();

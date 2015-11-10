@@ -12,15 +12,9 @@
 #include "Stack.h"
 #include "States.h"
 #include "UsedElements.h"
+#include "UsedAttributes.h"
 
 using namespace std;
-
-//no stack implementation, use this for testing
-bool push(string element){return true;}
-string pop(){return "";}
-string top(){return "";}
-bool isEmpty(){return true;}
-
 
 /*
 * Function to verify if element is a "void element", see http://www.w3.org/html/wg/drafts/html/master/syntax.html#elements-2
@@ -57,6 +51,7 @@ int main(int argc, char * argv[]){
 	string element = "";
 	string attribute = "";
 	int state = START;
+	stack s;
 
 	while (inStream.get(current))
 	{
@@ -152,7 +147,7 @@ int main(int argc, char * argv[]){
 				}
 				// "void elements" in HTML5 cannot be closed by closing tags
 				if (!isVoidElement(element)) {
-					if (!push(element)) {
+					if (!s.push(element)) {
 						cerr << "ERROR: cannot push element to stack!" << "\n";
 						invalidInput = true;
 						break;
@@ -204,7 +199,7 @@ int main(int argc, char * argv[]){
 				}
 				// "void elements" in HTML5 cannot be closed by closing tags
 				if (!isVoidElement(element)) {
-					if (!push(element)) {
+					if (!s.push(element)) {
 						cerr << "ERROR: cannot push element to stack!" << "\n";
 						invalidInput = true;
 						break;
@@ -229,14 +224,8 @@ int main(int argc, char * argv[]){
 					invalidInput = true;
 					break;
 				}
-				string currentElement = top();
-				if (currentElement.empty()) {
-					cerr << "ERROR: stack is empty while processing attribute" << "\n";
-					//invalidInput = true;
-					//break;
-				}
-				if (!isValidPair(currentElement, attribute)) {
-					cerr << "ERROR: invalid pair of element and attribute: \"" << element << "\" - \"" << attribute << "\"" << "\n";
+				if (!addAttribute(attribute)) {
+					cerr << "ERROR: cannot add attribute to list of attributes!" << "\n";
 					invalidInput = true;
 					break;
 				}
@@ -285,6 +274,7 @@ int main(int argc, char * argv[]){
 				}
 				state = INSIDE_ELEMENT;
 			}
+			// do nothing, dropping of value
 			break;
 		case DROP_ATTRIBUTE_VALUE_ESCAPED:
 			if (current == '"' && previous != '\\') {
@@ -317,18 +307,18 @@ int main(int argc, char * argv[]){
 		case END_ELEMENT:
 			if (current == '>') {
 				for (unsigned int i = 0; i < element.length(); i++) element[i] = (char)tolower(element[i]);
-				if (isEmpty()) {
+				if (s.isEmpty()) {
 					cerr << "ERROR: Too many element closings!" << "\n";
-					//invalidInput = true;
-					//break;
+					invalidInput = true;
+					break;
 				}
-				if (element.compare(top()) != 0) {
-					cerr << "ERROR: invalid closing of element \"" << top() << "\", current closing is for \"" << element << "\"\n";
-					//invalidInput = true;
-					//break;
+				if (element.compare(s.topOfStack()) != 0) {
+					cerr << "ERROR: invalid closing of element \"" << s.topOfStack() << "\", current closing is for \"" << element << "\"\n";
+					invalidInput = true;
+					break;
 				}
 				element.clear();
-				pop();
+				s.pop();
 				state = INSIDE_ELEMENT;
 				break;
 			}
@@ -344,6 +334,12 @@ int main(int argc, char * argv[]){
 
 		if (element.length() > 11) {
 			cerr << "ERROR: invalid element occured!" << "\n";
+			invalidInput = true;
+			break;
+		}
+
+		if (attribute.length() > 15) {
+			cerr << "ERROR: invalid attribute occured!" << "\n";
 			invalidInput = true;
 			break;
 		}
@@ -366,7 +362,7 @@ int main(int argc, char * argv[]){
 		invalidInput = true;
 	}
 
-	if (!invalidInput && !isEmpty()) {
+	if (!invalidInput && !s.isEmpty()) {
 		cerr << "ERROR: Not all elements were closed!" << "\n";
 		invalidInput = true;
 	}
@@ -374,6 +370,7 @@ int main(int argc, char * argv[]){
 	// parsing was succesfull, print output
 	if (!invalidInput) {
 		printAllElements();
+		printAllAttributes();
 	}
 
 	return 0;

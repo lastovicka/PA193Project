@@ -11,7 +11,7 @@ bool isValidElement(string element) {
 		return false;
 	}
 
-	for (int k = 0; k < 123; k++)
+	for (int k = 0; k < 116; k++)
 	{
 		if (element.compare(Valid_HTML5_Element[k])==0)
 		{

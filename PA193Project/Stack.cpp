@@ -20,6 +20,7 @@ return true;
 }
 */
 //=======
+/*
 const int stack_size = 1000;
 
 class stack
@@ -35,7 +36,7 @@ public:
 	string pop();   // removes and returns the item at the top of stack
 	bool isEmpty();
 	bool full();
-};
+};*/
 
 // initialize the stack to an empty stack
 stack::stack()
@@ -86,6 +87,20 @@ string stack::pop()
 	{
 		top--;
 		return data[top + 1];
+	}
+}
+
+string stack::topOfStack()
+{
+	// if the stack is empty, error
+	if (isEmpty())
+	{
+		//cerr << "\n\nStack Error: Popping an empty stack";
+		return "empty stack ?";
+	}
+	else // OK to pop
+	{
+		return data[top];
 	}
 }
 
