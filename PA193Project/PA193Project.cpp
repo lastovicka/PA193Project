@@ -33,7 +33,7 @@ bool isVoidElement(string element) {
 	return false;
 }
 
-int main(int argc, char * argv[]){
+int main(int argc, char* argv[]){
 	if (argc != 2) {
 		cerr << "You need to specify file to open" << "\n";
 		return 0;
