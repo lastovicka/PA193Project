@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-const int stack_size = 1000;
+const int stack_size = 550;
 
 class stack
 {
